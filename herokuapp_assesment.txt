@@ -1,0 +1,110 @@
+package heroku;
+
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class multiwindow {
+	
+	WebDriver dr;
+	
+	String url = "https://the-internet.herokuapp.com/";
+	
+	
+	@BeforeTest
+	
+	public void test() {
+		
+		WebDriverManager.chromedriver().setup();
+		
+		dr=new ChromeDriver();
+		
+		dr.manage().window().maximize();
+		
+		dr.get(url);
+		
+	}
+	@Test(enabled = true,priority = 0)
+	public void tc1() throws InterruptedException {
+		
+	dr.findElement(By.linkText("Multiple Windows")).click();
+	
+	Thread.sleep(5000);
+	
+	WebElement t = dr.findElement(By.linkText("Click Here"));	
+	
+	t.click();
+	
+	Thread.sleep(5000);
+	
+	String text = dr.findElement(By.tagName("Body")).getText();
+	System.out.println(text);
+
+	
+	String parent = dr.getWindowHandle();
+	
+	
+	Set<String> tabs = dr.getWindowHandles();
+	
+	System.out.println(tabs);
+	
+	for ( String handles:tabs) {
+	
+		dr.switchTo().window(parent);
+		
+	
+	}
+	
+	}
+	//@Test (enabled = true,priority = 1)
+	public void tc2() throws InterruptedException {
+		dr.findElement(By.linkText("Frames")).click();
+		
+		Thread.sleep(3000);
+		
+		dr.findElement(By.linkText("Nested Frames")).click();
+		
+		Thread.sleep(3000);
+		
+		dr.switchTo().frame("frame-top");
+		dr.switchTo().frame("frame-middle");
+	
+		
+	}
+	//@Test(enabled = true,priority = 2)
+	
+	public void tc3() throws InterruptedException {
+		
+		dr.findElement(By.linkText("Drag and Drop")).click();
+		
+		Thread.sleep(3000);
+		
+		WebElement drag= dr.findElement(By.id("column-a"));
+		WebElement dp= dr.findElement(By.id("column-b"));
+		
+		Actions action = new Actions(dr);
+		
+		action.moveToElement(drag).build().perform();
+		Thread.sleep(5000);
+		action.moveToElement(dp).build().perform();
+		
+		
+		
+		
+	}
+	}
+
+
